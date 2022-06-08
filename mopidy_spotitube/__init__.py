@@ -25,24 +25,6 @@ class Extension(ext.Extension):
         return schema
 
     def setup(self, registry):
-        # You will typically only implement one of the following things
-        # in a single extension.
-
-        # TODO: Edit or remove entirely
-        # from .frontend import FoobarFrontend
-
-        # registry.add("frontend", FoobarFrontend)
-
-        # TODO: Edit or remove entirely
         from .backend import SpotiTubeBackend
 
         registry.add("backend", SpotiTubeBackend)
-
-        # TODO: Edit or remove entirely
-        # registry.add(
-        #     "http:static",
-        #     {
-        #         "name": self.ext_name,
-        #         "path": str(pathlib.Path(__file__).parent / "static"),
-        #     },
-        # )

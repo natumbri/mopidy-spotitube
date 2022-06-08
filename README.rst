@@ -14,7 +14,7 @@ Mopidy-SpotiTube
     :target: https://codecov.io/gh/natumbri/mopidy-spotitube
     :alt: Test coverage
 
-Mopidy extension for playing Spotify playlists using YouTube Music
+Mopidy extension for playing Spotify users' public playlists using mopidy-youtube
 
 
 Installation
@@ -22,9 +22,10 @@ Installation
 
 Install by running::
 
-    python3 -m pip install Mopidy-SpotiTube
+    python3 -m pip install https://github.com/natumbri/mopidy-youtube/archive/master.zip
+    (TODO: python3 -m pip install Mopidy-SpotiTube)
 
-See https://mopidy.com/ext/spotitube/ for alternative installation methods.
+TODO: See https://mopidy.com/ext/spotitube/ for alternative installation methods.
 
 
 Configuration
@@ -34,7 +35,17 @@ Before starting Mopidy, you must add configuration for
 Mopidy-SpotiTube to your Mopidy configuration file::
 
     [spotitube]
-    # TODO: Add example of extension config
+    enabled = true
+    spotify_users = 
+      spotify_user_id_1
+      spotify_user_id_2
+      ...
+      spotify_user_id_n
+
+where spotify_user_id_1 ... n are each a spotify user id, which can be found in a spotify url::
+    https://open.spotify.com/user/{spotify_user_id}
+
+That's it.  No OAuth, no keys, no passwords, no accounts.
 
 
 Project resources

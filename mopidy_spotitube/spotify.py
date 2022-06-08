@@ -3,9 +3,9 @@ from concurrent.futures.thread import ThreadPoolExecutor
 
 from bs4 import BeautifulSoup as bs
 from mopidy_youtube.comms import Client
-from spotdl.providers.yt_provider import search_and_get_best_match
 
 from mopidy_spotitube import logger
+from mopidy_spotitube.yt_provider import search_and_get_best_match
 
 
 class Spotify(Client):
@@ -88,10 +88,10 @@ class Spotify(Client):
         # without multithreading
         # [track.update({"uri": search_and_get_best_match(**track)}) for track in tracks]
 
-        # search_and_get_best_match is _really_ _really_ slow
-        # so with multithreading
+        # search_and_get_best_match is slow, so with multithreading
+        # but have to use a wrapper to pass a dict
         def search_and_get_best_match_wrapper(track):
-            track.update({"url": search_and_get_best_match(**track)})
+            track.update({"id": search_and_get_best_match(**track)})
             return track
 
         results = []

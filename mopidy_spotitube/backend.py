@@ -1,7 +1,6 @@
 import pykka
 from mopidy import backend, httpclient
 from mopidy.models import Ref
-from mopidy_youtube.data import extract_video_id
 
 from mopidy_spotitube import Extension, logger
 from mopidy_spotitube.data import extract_playlist_id, extract_user_id
@@ -14,7 +13,7 @@ class SpotiTubeBackend(pykka.ThreadingActor, backend.Backend):
         self.config = config
         self.library = SpotiTubeLibraryProvider(backend=self)
         self.users = config["spotitube"]["spotify_users"]
-        self.uri_schemes = ["spotitube"]  # is this required?
+        self.uri_schemes = ["spotitube"]
         self.user_agent = "{}/{}".format(Extension.dist_name, Extension.version)
 
     def on_start(self):
@@ -85,7 +84,7 @@ class SpotiTubeLibraryProvider(backend.LibraryProvider):
             )
             trackrefs = [
                 Ref.track(
-                    uri=f"yt:video:{extract_video_id(track['url'])}",
+                    uri=f"yt:video:{track['id']}",
                     name=track["song_name"],
                 )
                 for track in tracks
