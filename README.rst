@@ -42,10 +42,10 @@ Mopidy-SpotiTube to your Mopidy configuration file::
       ...
       spotify_user_id_n
 
-where spotify_user_id_1 ... n are each a spotify user id, which can be found in a spotify url::
-    https://open.spotify.com/user/{spotify_user_id}
 
-That's it.  No OAuth, no keys, no passwords, no accounts.
+Where spotify_user_id_1 ... n are each a spotify user id, which can be found in a spotify url::
+
+    https://open.spotify.com/user/{spotify_user_id}
 
 
 Project resources
