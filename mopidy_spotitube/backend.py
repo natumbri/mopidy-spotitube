@@ -72,6 +72,7 @@ class SpotiTubeLibraryProvider(backend.LibraryProvider):
                     name=playlist["name"],
                 )
                 for playlist in playlists
+                if playlist["id"]
             ]
             return playlistrefs
 
@@ -88,5 +89,6 @@ class SpotiTubeLibraryProvider(backend.LibraryProvider):
                     name=track["song_name"],
                 )
                 for track in tracks
+                if track["id"]
             ]
             return trackrefs

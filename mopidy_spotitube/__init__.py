@@ -6,7 +6,6 @@ from mopidy import config, ext
 
 __version__ = pkg_resources.get_distribution("Mopidy-SpotiTube").version
 
-# TODO: If you need to log, use loggers named after the current Python module
 logger = logging.getLogger(__name__)
 
 
