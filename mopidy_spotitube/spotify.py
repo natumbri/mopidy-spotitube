@@ -13,7 +13,11 @@ class Spotify(Client):
     def get_spotify_headers(cls, endpoint):
 
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 6.1) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/80.0.3987.149 Safari/537.36"
+            )
         }
         # Getting the access token first to send it with the header to the api endpoint
         page = cls.session.get(endpoint, headers=headers)
@@ -86,7 +90,10 @@ class Spotify(Client):
         ]
 
         # without multithreading
-        # [track.update({"uri": search_and_get_best_match(**track)}) for track in tracks]
+        # [
+        #     track.update({"uri": search_and_get_best_match(**track)})
+        #     for track in tracks
+        # ]
 
         # search_and_get_best_match is slow, so with multithreading
         # but have to use a wrapper to pass a dict

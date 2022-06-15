@@ -32,8 +32,9 @@ class SpotiTubeLibraryProvider(backend.LibraryProvider):
 
     """
     Called when root_directory is set to [insert description]
-    When enabled makes possible to browse the users listed in config["spotitube"]["spotify_users"]
-    and to browse their public playlists and the separate tracks those playlists.
+    When enabled makes possible to browse the users listed in
+    config["spotitube"]["spotify_users"] and to browse their
+    public playlists and the separate tracks those playlists.
     """
 
     def browse(self, uri):
@@ -42,7 +43,9 @@ class SpotiTubeLibraryProvider(backend.LibraryProvider):
         if uri == "spotitube:browse":
             return [
                 Ref.directory(uri="spotitube:user:root", name="Spotify Users"),
-                # Ref.directory(uri="spotitube:playlist:root", name="Spotify Playlists"),
+                # Ref.directory(
+                #     uri="spotitube:playlist:root", name="Spotify Playlists"
+                # ),
             ]
 
         # if we're looking at users, return a list of users
