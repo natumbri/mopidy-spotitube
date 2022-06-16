@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup as bs
 from mopidy_youtube.comms import Client
 
 from mopidy_spotitube import logger
-from mopidy_spotitube.yt_provider import search_and_get_best_match
+from mopidy_youtube.yt_matcher import search_and_get_best_match
 
 
 class Spotify(Client):
