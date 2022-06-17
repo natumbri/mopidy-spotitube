@@ -1,11 +1,10 @@
 import json
-from concurrent.futures.thread import ThreadPoolExecutor
 
 from bs4 import BeautifulSoup as bs
 from mopidy_youtube.comms import Client
+from mopidy_youtube.yt_matcher import search_and_get_best_match
 
 from mopidy_spotitube import logger
-from mopidy_youtube.yt_matcher import search_and_get_best_match
 
 
 class Spotify(Client):
@@ -24,7 +23,7 @@ class Spotify(Client):
         soup = bs(page.text, "html.parser")
         logger.debug(f"get_spotify_headers base url: {endpoint}")
         access_token_tag = soup.find("script", {"id": "config"})
-        json_obj = json.loads(access_token_tag.contents[0])  # text)
+        json_obj = json.loads(access_token_tag.contents[0])
         access_token_text = json_obj["accessToken"]
         headers.update(
             {
@@ -89,22 +88,4 @@ class Spotify(Client):
             for item in items
         ]
 
-        # without multithreading
-        # [
-        #     track.update({"uri": search_and_get_best_match(**track)})
-        #     for track in tracks
-        # ]
-
-        # search_and_get_best_match is slow, so with multithreading
-        # but have to use a wrapper to pass a dict
-        def search_and_get_best_match_wrapper(track):
-            track.update({"id": search_and_get_best_match(**track)})
-            return track
-
-        results = []
-
-        with ThreadPoolExecutor() as executor:
-            futures = executor.map(search_and_get_best_match_wrapper, tracks)
-            [results.append(value) for value in futures if value is not None]
-
-        return results
+        return search_and_get_best_match(tracks)

@@ -1,4 +1,7 @@
+import json
+
 import pykka
+from cachetools import TTLCache, cached
 from mopidy import backend, httpclient
 from mopidy.models import Ref
 
@@ -28,8 +31,6 @@ class SpotiTubeBackend(pykka.ThreadingActor, backend.Backend):
 
 class SpotiTubeLibraryProvider(backend.LibraryProvider):
 
-    root_directory = Ref.directory(uri="spotitube:browse", name="SpotiTube")
-
     """
     Called when root_directory is set to [insert description]
     When enabled makes possible to browse the users listed in
@@ -37,6 +38,14 @@ class SpotiTubeLibraryProvider(backend.LibraryProvider):
     public playlists and the separate tracks those playlists.
     """
 
+    root_directory = Ref.directory(uri="spotitube:browse", name="SpotiTube")
+
+    cache_max_len = 4000
+    cache_ttl = 21600
+
+    spotify_cache = TTLCache(maxsize=cache_max_len, ttl=cache_ttl)
+
+    @cached(cache=spotify_cache)
     def browse(self, uri):
 
         # if we're browsing, return a list of directories
@@ -86,12 +95,21 @@ class SpotiTubeLibraryProvider(backend.LibraryProvider):
             tracks = self.spotify.get_spotify_playlist_tracks(
                 extract_playlist_id(uri)
             )
+
             trackrefs = [
                 Ref.track(
-                    uri=f"yt:video:{track['id']}",
-                    name=track["song_name"],
+                    uri=f"yt:video:{track['videoId']}",
+                    name=track["title"],
                 )
                 for track in tracks
-                if track["id"]
+                if "videoId" in track
             ]
+            trackrefs[0] = Ref.track(
+                uri=(
+                    f"yt:video:{tracks[0]['videoId']}"
+                    f":preload:"
+                    f"{json.dumps([track for track in tracks if track is not None])}"
+                ),
+                name=tracks[0]["title"],
+            )
             return trackrefs
