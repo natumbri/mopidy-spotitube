@@ -22,9 +22,7 @@ class SpotiTubeBackend(pykka.ThreadingActor, backend.Backend):
     def on_start(self):
         proxy = httpclient.format_proxy(self.config["proxy"])
         headers = {
-            "user-agent": httpclient.format_user_agent(self.user_agent),
-            "Cookie": "PREF=hl=en; CONSENT=YES+20210329;",
-            "Accept-Language": "en;q=0.8",
+            "user-agent": httpclient.format_user_agent(self.user_agent)
         }
         self.library.spotify = Spotify(proxy, headers)
 
@@ -104,6 +102,10 @@ class SpotiTubeLibraryProvider(backend.LibraryProvider):
                 for track in tracks
                 if "videoId" in track
             ]
+
+            # include ytmusic data for all tracks as preload data in the uri 
+            # for the first track.  There is surely a better way to do this.
+            # It breaks the first track in the musicbox_webclient
             trackrefs[0] = Ref.track(
                 uri=(
                     f"yt:video:{tracks[0]['videoId']}"

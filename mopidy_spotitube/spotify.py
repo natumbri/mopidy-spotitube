@@ -8,24 +8,15 @@ from mopidy_spotitube import logger
 
 
 class Spotify(Client):
-    @classmethod
-    def get_spotify_headers(cls, endpoint):
-
-        headers = {
-            "User-Agent": (
-                "Mozilla/5.0 (Windows NT 6.1) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/80.0.3987.149 Safari/537.36"
-            )
-        }
+    def get_spotify_headers(self, endpoint):
         # Getting the access token first to send it with the header to the api endpoint
-        page = cls.session.get(endpoint, headers=headers)
+        page = self.session.get(endpoint)
         soup = bs(page.text, "html.parser")
         logger.debug(f"get_spotify_headers base url: {endpoint}")
         access_token_tag = soup.find("script", {"id": "config"})
         json_obj = json.loads(access_token_tag.contents[0])
         access_token_text = json_obj["accessToken"]
-        headers.update(
+        self.session.headers.update(
             {
                 "authorization": f"Bearer {access_token_text}",
                 "referer": endpoint,
@@ -33,47 +24,30 @@ class Spotify(Client):
                 "app-platform": "WebPlayer",
             }
         )
-        return headers
+        return
 
-    @classmethod
-    def get_spotify_user_details(cls, user):
+    def get_spotify_user_details(self, user):
         endpoint = f"https://api.spotify.com/v1/users/{user}"
-        headers = cls.get_spotify_headers(
-            f"https://open.spotify.com/user/{user}"
-        )
-        url_params = {}
-        data = cls.session.get(
-            endpoint, params=url_params, headers=headers
-        ).json()
+        self.get_spotify_headers(f"https://open.spotify.com/user/{user}")
+        data = self.session.get(endpoint).json()
         return data
 
-    @classmethod
-    def get_spotify_user_playlists(cls, user):
+    def get_spotify_user_playlists(self, user):
         endpoint = f"https://api.spotify.com/v1/users/{user}/playlists"
-        headers = cls.get_spotify_headers(
-            f"https://open.spotify.com/user/{user}"
-        )
-        url_params = {}
-        data = cls.session.get(
-            endpoint, params=url_params, headers=headers
-        ).json()
+        self.get_spotify_headers(f"https://open.spotify.com/user/{user}")
+        data = self.session.get(endpoint).json()
         playlists = data["items"]
         return [
             {"name": playlist["name"], "id": playlist["id"]}
             for playlist in playlists
         ]
 
-    @classmethod
-    def get_spotify_playlist_tracks(cls, playlist):
-        # get tracks for each playlist and translate to ytm
+    def get_spotify_playlist_tracks(self, playlist):
         endpoint = f"https://api.spotify.com/v1/playlists/{playlist}"
-        headers = cls.get_spotify_headers(
+        self.get_spotify_headers(
             f"https://open.spotify.com/playlist/{playlist}"
         )
-        url_paramters = {}
-        data = cls.session.get(
-            endpoint, params=url_paramters, headers=headers
-        ).json()
+        data = self.session.get(endpoint).json()
         items = data["tracks"]["items"]
 
         tracks = [
